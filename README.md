@@ -22,6 +22,8 @@ Now restart the server and login to odoo with ADMIN account.WhatsApp with MyAlic
 ![Whatsapp with MyAlice](https://i.ibb.co/SJmyBgF/1.png)
 
 Click on Active button to Install Whatsapp With MyAlice app 
+
+
 ![Whatsapp with MyAlice](https://i.ibb.co/KLM5bkh/Screenshot-of-Odoo-Apps.jpg)
 
 
