@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="whatsapp_sent_messages_tree_view" model="ir.ui.view">
+            <field name="name">whatsapp.sent.messages.tree.view</field>
+            <field name="model">whatsapp.sent.messages</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="customer_phone"/>
+                    <field name="template_id"/>
+                    <field name="platform_id"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="whatsapp_sent_messages_form_view" model="ir.ui.view">
+            <field name="name">whatsapp.sent.messages.form.view</field>
+            <field name="model">whatsapp.sent.messages</field>
+            <field name="arch" type="xml">
+                <form string="Whatsapp Messages">
+                    <header>
+                        <field name="status" widget="statusbar" class="oe_highlight"
+                           statusbar_visible="draft,sent,failed"/>
+
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="customer_phone"/>
+                            <field name="template_id"/>
+                            <field name="platform_id"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_no_one"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="whatsapp_sent_messages">
+            <field name="name">Whatsapp Sent Messages</field>
+            <field name="res_model">whatsapp.sent.messages</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create o_view_nocontent_smiling_face">
+                    Add a new record.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

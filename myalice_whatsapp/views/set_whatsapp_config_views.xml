@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="whatsapp_api_configuration_tree_view" model="ir.ui.view">
+            <field name="name">set.whatsapp.config.tree.view</field>
+            <field name="model">set.whatsapp.config</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="secret_key"/>
+                    <field name="is_active"/>
+                    <field name="create_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="whatsapp_api_configuration_form_view" model="ir.ui.view">
+            <field name="name">set.whatsapp.config.form.view</field>
+            <field name="model">set.whatsapp.config</field>
+            <field name="arch" type="xml">
+                <form string="Whatsapp API Configuration">
+                    <header>
+<!--                        <button name="get_platform_list"-->
+<!--                                groups="whatsapp.group_whatsapp_manager"-->
+<!--                                string="Connect"-->
+<!--                                type="object" class="oe_highlight"-->
+<!--                                confirm="Are you sure you want to submit?"-->
+<!--                        />-->
+                        <button name="get_platform_list"
+                                string="Connect"
+                                type="object"
+                                class="oe_highlight"
+                                data-hotkey="w"
+                                title="Connect Whatsapp"
+                            />
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="secret_key"/>
+                            <field name="is_active"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_no_one"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+         <record model="ir.actions.act_window" id="whatsapp_api_configuration">
+            <field name="name">Whatsapp API Secret Key</field>
+            <field name="res_model">set.whatsapp.config</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create o_view_nocontent_smiling_face">
+                    Add a new record.
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

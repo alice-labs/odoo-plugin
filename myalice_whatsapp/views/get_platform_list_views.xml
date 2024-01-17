@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="get_platform_list_configuration_tree_view" model="ir.ui.view">
+            <field name="name">get.platform.list.tree.view</field>
+            <field name="model">get.platform.list</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false">
+                    <field name="title"/>
+                    <field name="platform_id"/>
+                    <field name="number"/>
+                    <field name="create_date"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- Form View -->
+        <record id="get_platform_list_configuration_form_view" model="ir.ui.view">
+            <field name="name">get.platform.list.form.view</field>
+            <field name="model">get.platform.list</field>
+            <field name="arch" type="xml">
+                <form string="Get Platform List" create="false" edit="false">
+                    <header>
+
+                        <button name="get_template_list"
+                                string="Get Template"
+                                type="object"
+                                class="oe_highlight"
+                                data-hotkey="w"
+                                title="MyAlice Whatsapp Templates"
+                            />
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="title"/>
+                            <field name="platform_id"/>
+                            <field name="number"/>
+                        </group>
+
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_no_one"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="get_platform_list_configuration">
+            <field name="name">Channels</field>
+            <field name="res_model">get.platform.list</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create o_view_nocontent_smiling_face">
+                    No Channels Found. Please Connect to Whatsapp API.
+                    <br/>
+<!--                    <a href="#" data-oe-model="set.whatsapp.config">Connect</a>-->
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

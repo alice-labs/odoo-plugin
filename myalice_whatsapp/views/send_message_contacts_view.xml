@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="whatsapp_send_message_contact_form" model="ir.ui.view">
+            <field name="name">res.partner.whatsapp.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                  <header>
+                       <button name="%(myalice_whatsapp.action_send_message_contact_wizard)d" string="Send Whatsapp Message" type="action" class="oe_highlight"/>
+                   </header>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

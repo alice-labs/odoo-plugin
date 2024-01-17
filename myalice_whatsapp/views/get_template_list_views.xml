@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="get_template_list_configuration_tree_view" model="ir.ui.view">
+            <field name="name">get.template.list.tree.view</field>
+            <field name="model">get.template.list</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="template_id"/>
+                    <field name="status"/>
+                    <field name="create_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="get_template_list_configuration_form_view" model="ir.ui.view">
+            <field name="name">get.template.list.form.view</field>
+            <field name="model">get.template.list</field>
+            <field name="arch" type="xml">
+                <form string="Get Template List">
+                    <sheet>
+                        <group>
+                            <field name="platform_id"/>
+                            <field name="name"/>
+                            <field name="template_id"/>
+                        </group>
+                        <group>
+                            <field name="status"/>
+                            <field name="footer"/>
+                            <field name="header_type"/>
+                            <field name="header_value"/>
+                        </group>
+                         <notebook>
+                            <page name="body" string="Body">
+                                <field name="body"/>
+                            </page>
+                             <page name="buttons" string="Buttons">
+                                 <field name="button_ids" nolabel="1">
+                                     <tree editable="bottom">
+                                         <field name="buttons_id"/>
+                                         <field name="buttons_type"/>
+                                         <field name="buttons_title"/>
+                                         <field name="buttons_value"/>
+                                         <field name="buttons_verbose"/>
+                                     </tree>
+                                 </field>
+                            </page>
+                             <page name="variables" string="Variables">
+                                 <field name="variables_ids" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="attribute"/>
+                                    </tree>
+                                </field>
+                             </page>
+
+
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_no_one"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="get_template_list_configuration">
+            <field name="name">Template List</field>
+            <field name="res_model">get.template.list</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create o_view_nocontent_smiling_face">
+                    Add a new record.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>
