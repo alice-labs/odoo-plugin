@@ -1,6 +1,5 @@
 from odoo import models, fields, api
-import requests
-from odoo.exceptions import UserError, ValidationError
+
 
 class GetTemplateList(models.Model):
     _name = 'get.template.list'

@@ -15,7 +15,6 @@
             </field>
         </record>
 
-
         <!-- Form View -->
         <record id="get_platform_list_configuration_form_view" model="ir.ui.view">
             <field name="name">get.platform.list.form.view</field>
@@ -57,7 +56,6 @@
                 <p class="oe_view_nocontent_create o_view_nocontent_smiling_face">
                     No Channels Found. Please Connect to Whatsapp API.
                     <br/>
-<!--                    <a href="#" data-oe-model="set.whatsapp.config">Connect</a>-->
                 </p>
             </field>
         </record>

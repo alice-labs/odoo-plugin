@@ -22,12 +22,6 @@
             <field name="arch" type="xml">
                 <form string="Whatsapp API Configuration">
                     <header>
-<!--                        <button name="get_platform_list"-->
-<!--                                groups="whatsapp.group_whatsapp_manager"-->
-<!--                                string="Connect"-->
-<!--                                type="object" class="oe_highlight"-->
-<!--                                confirm="Are you sure you want to submit?"-->
-<!--                        />-->
                         <button name="get_platform_list"
                                 string="Connect"
                                 type="object"
@@ -62,7 +56,5 @@
                 </p>
             </field>
         </record>
-
-
     </data>
 </odoo>

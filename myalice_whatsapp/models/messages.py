@@ -1,7 +1,5 @@
 from odoo import models, fields, api
-from odoo.exceptions import UserError, ValidationError
-import requests
-import json
+
 
 class WhatsappMessages(models.Model):
     _name = 'whatsapp.sent.messages'
