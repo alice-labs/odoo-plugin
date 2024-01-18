@@ -15,7 +15,7 @@
     'author': "MyAlice",
     'website': "https://www.myalice.ai/",
     # any module necessary for this one to work correctly
-    'depends': ['base','mail'],
+    'depends': ['base','mail','account'],
 
     # always loaded
     'data': [
@@ -28,6 +28,8 @@
 
         'wizard/send_message_contact.xml',
         'views/send_message_contacts_view.xml',
+        'wizard/send_message_invoicing.xml',
+        'views/send_message_invoicing_view.xml',
         'views/menuitem_views.xml',
     ],
 

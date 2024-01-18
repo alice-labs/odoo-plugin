@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="send_message_contact_wizard" model="ir.ui.view">
-        <field name="name">send.message.contact.wizard.form</field>
-        <field name="model">send.message.contact.wizard</field>
+    <record id="send_message_invoicing_wizard" model="ir.ui.view">
+        <field name="name">send.message.invoicing.wizard.form</field>
+        <field name="model">send.message.invoicing.wizard</field>
         <field name="arch" type="xml">
             <form string="Send Message">
                 <group>
                      <field name="wa_template_id"/>
                     <field name="phone"/>
                     <field name="variables_available" invisible="1"/>
-<!--                    <span t-if="variables_available==1" class="o_kanban_record_subtitle"><p>Template Variables</p></span>-->
                     <field name="variable_keys" attrs="{'invisible': [('variables_available', '=', False)]}"/>
                     <field name="variable_values" attrs="{'invisible': [('variables_available', '=', False)]}"/>
                 </group>
                 <footer>
-                    <button name="action_send_whatsapp_template" string="Send Message" type="object" class="oe_highlight"/>
+                    <button name="action_send_whatsapp_invoicing" string="Send Message" type="object" class="oe_highlight"/>
                     <button string="Cancel" class="oe_link" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
-    <record id="action_send_message_contact_wizard" model="ir.actions.act_window">
+    <record id="action_send_message_invoicing_wizard" model="ir.actions.act_window">
         <field name="name">Send Whatsapp Message</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">send.message.contact.wizard</field>
+        <field name="res_model">send.message.invoicing.wizard</field>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="send_message_contact_wizard"/>
+        <field name="view_id" ref="send_message_invoicing_wizard"/>
         <field name="target">new</field>
     </record>
 </odoo>

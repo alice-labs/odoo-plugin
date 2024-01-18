@@ -8,7 +8,12 @@
             <field name="arch" type="xml">
                 <xpath expr="//sheet" position="before">
                   <header>
-                       <button name="%(myalice_whatsapp.action_send_message_contact_wizard)d" string="Send Whatsapp Message" type="action" class="oe_highlight"/>
+                       <button name="%(myalice_whatsapp.action_send_message_contact_wizard)d"
+                               string="Send Whatsapp Message"
+                               type="action"
+                               class="oe_highlight"
+                               groups="myalice_whatsapp.group_whatsapp_user"
+                       />
                    </header>
                 </xpath>
             </field>
