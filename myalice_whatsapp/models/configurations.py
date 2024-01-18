@@ -1,7 +1,7 @@
 from odoo import models, fields, api, _
 import requests
 from odoo.exceptions import UserError, ValidationError
-from odoo.addons.helper import validator
+from odoo import api, exceptions
 
 class Configuration(models.Model):
     _name = 'set.whatsapp.config'
@@ -15,17 +15,10 @@ class Configuration(models.Model):
 
     @api.constrains('is_active')
     def _check_unique_secret_key(self):
-        for record in self:
-            check_str = record.name.replace(" ", "")
-            if len(check_str) == 0:
-                raise ValidationError("The name is empty !")
-            elif check_str.isdigit():
-                raise ValidationError("Name cannot be only number")
-
         msg = 'One Active Configurations is Available named "%s"' % self.name
-        envobj = self.env['set.whatsapp.config']
-        conditionlist = [('is_active', '=', True)]
-        validator.check_duplicate_value(self, envobj, conditionlist, msg)
+        envobj = self.env['set.whatsapp.config'].search([('is_active', '=', True)])
+        if len(envobj) > 1:
+            raise exceptions.ValidationError(msg + " already exists!")
 
     def get_platform_list(self):
         if not self.is_active == True:
