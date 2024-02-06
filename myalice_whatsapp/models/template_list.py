@@ -11,7 +11,7 @@ class GetTemplateList(models.Model):
     name = fields.Char(string='Name',size=100,tracking=True,readonly=True)
     status = fields.Char(string='Status',size=100,tracking=True,readonly=True)
     body = fields.Text(string='Body',tracking=True,readonly=True)
-    platform_id = fields.Integer(string='Channel',tracking=True,)
+    platform_id = fields.Integer(string='Channel',tracking=True,readonly=True)
     footer = fields.Text(string='Footer',tracking=True,readonly=True)
 
     header_type = fields.Char(string='Header Type',size=100,tracking=True,readonly=True)
