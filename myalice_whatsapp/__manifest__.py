@@ -32,6 +32,7 @@
         'views/send_message_invoicing_view.xml',
         'views/menuitem_views.xml',
     ],
+    "images": ["static/description/banner.JPG"],
 
     'application': True,
     'installable': True,
