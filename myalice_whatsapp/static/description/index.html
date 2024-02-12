@@ -1,0 +1,60 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>README.md</title><style></style></head><body id="preview">
+<h1 class="code-line" data-line-start="0" data-line-end="1"><a id="WhatsApp_with_MyAlice_0"></a>WhatsApp with MyAlice</h1>
+<p class="has-line-data" data-line-start="1" data-line-end="2">Introducing our latest innovation on the Odoo Marketplace: the WhatsApp Connector for Odoo! Seamlessly integrate your WhatsApp numbers from MyAlice directly into your Odoo environment, revolutionizing the way you communicate with your contacts. This powerful app simplifies and enhances your messaging experience, providing you with a range of features to streamline your communication processes.</p>
+<h1 class="code-line" data-line-start="4" data-line-end="5"><a id="Prerequisites_4"></a>Prerequisites</h1>
+<ul>
+<li class="has-line-data" data-line-start="5" data-line-end="6">Python3.10</li>
+<li class="has-line-data" data-line-start="6" data-line-end="7">Odoo 16</li>
+<li class="has-line-data" data-line-start="7" data-line-end="9">WhatsApp with MyAlice</li>
+</ul>
+<h3 class="code-line" data-line-start="9" data-line-end="10"><a id="Setup_WhatsApp_with_MyAlice_9"></a>Setup WhatsApp with MyAlice</h3>
+<ul>
+<li class="has-line-data" data-line-start="11" data-line-end="15">clone the repository from github.<pre><code class="has-line-data" data-line-start="13" data-line-end="15">https://github.com/alice-labs/odoo-plugin
+</code></pre>
+</li>
+<li class="has-line-data" data-line-start="15" data-line-end="20">Now copy the file path and past the path into the addons_path in odoo.conf file<pre><code class="has-line-data" data-line-start="17" data-line-end="19">addons_path = odoo16/addons,odoo-plugin
+</code></pre>
+</li>
+</ul>
+<p class="has-line-data" data-line-start="20" data-line-end="22">Now restart the server and login to odoo with ADMIN account.WhatsApp with MyAlice Will Visible in the app list. If don’t Click on Apps and Update the app list as below screenshot.<br>
+<img src="https://i.ibb.co/SJmyBgF/1.png" alt="Whatsapp with MyAlice"></p>
+<p class="has-line-data" data-line-start="23" data-line-end="24">Click on Active button to Install Whatsapp With MyAlice app</p>
+<p class="has-line-data" data-line-start="26" data-line-end="27"><img src="https://i.ibb.co/KLM5bkh/Screenshot-of-Odoo-Apps.jpg" alt="Whatsapp with MyAlice"></p>
+<h3 class="code-line" data-line-start="29" data-line-end="30"><a id="Configuration_29"></a>Configuration</h3>
+<p class="has-line-data" data-line-start="30" data-line-end="31">After Install the app we need to configure the app.</p>
+<ul>
+<li class="has-line-data" data-line-start="31" data-line-end="34">Permission to User
+<ul>
+<li class="has-line-data" data-line-start="32" data-line-end="34">Goto: Settings &gt; Users &amp; Companies</li>
+</ul>
+</li>
+</ul>
+<p class="has-line-data" data-line-start="34" data-line-end="35"><img src="https://i.ibb.co/hKntvgW/2.png" alt="Whatsapp with MyAlice"></p>
+<ul>
+<li class="has-line-data" data-line-start="36" data-line-end="38">Click on the user you want to give access to user. Add give MyAlice Whatsapp access to the user as below screenshot</li>
+</ul>
+<p class="has-line-data" data-line-start="38" data-line-end="39"><img src="https://i.ibb.co/LhYwVhG/3.png" alt="Whatsapp with MyAlice"></p>
+<p class="has-line-data" data-line-start="40" data-line-end="41">Now click on save and Refresh the page. Now you will see Whatsapp With MyALice</p>
+<p class="has-line-data" data-line-start="42" data-line-end="43"><img src="https://i.ibb.co/ncNFFLF/4.png" alt="Whatsapp with MyAlice"></p>
+<h3 class="code-line" data-line-start="45" data-line-end="46"><a id="Configuration_With_Secret_Key_45"></a>Configuration With Secret Key</h3>
+<p class="has-line-data" data-line-start="46" data-line-end="48">Now we have to configure with MyAlice Whatsapp Secret Key. Click on Configuration and Click on New.<br>
+<img src="https://i.ibb.co/7tL9zG9/5.png" alt="Whatsapp with MyAlice"></p>
+<p class="has-line-data" data-line-start="49" data-line-end="51">Now Give A Name, MyAlice Secret Key and Click Active and save it as Below. To connect with MyAlice click on Connect Button.<br>
+After click on the Connect button if everything is correct you will see a message as below that API Connected Successfully</p>
+<p class="has-line-data" data-line-start="52" data-line-end="53"><img src="https://i.ibb.co/GCppWDC/7.png" alt="Whatsapp with MyAlice"></p>
+<p class="has-line-data" data-line-start="55" data-line-end="56">In this way the rest of all the lambda will create.</p>
+<p class="has-line-data" data-line-start="57" data-line-end="59">First Build the common Docker Image and then build the other docker images.<br>
+To build image and run lambda locally follow the following commands</p>
+<h3 class="code-line" data-line-start="60" data-line-end="61"><a id="Channels_60"></a>Channels</h3>
+<p class="has-line-data" data-line-start="61" data-line-end="63">Click on Channels from the menu and you will see all your channels as below.<br>
+<img src="https://i.ibb.co/hZGzKqw/8.png" alt="Whatsapp with MyAlice"></p>
+<p class="has-line-data" data-line-start="64" data-line-end="66">Click on your channels which Templates you want to get. You’ll see a Get Template button. Click on that button to get all the Templates which are available for this channel.<br>
+<img src="https://i.ibb.co/TbStY47/9.png" alt></p>
+<h3 class="code-line" data-line-start="67" data-line-end="68"><a id="Templates_67"></a>Templates</h3>
+<p class="has-line-data" data-line-start="69" data-line-end="71">Click on Templates and you will see all your templates as below<br>
+<img src="https://i.ibb.co/WfQzxN3/10.png" alt="Whatsapp with MyAlice"></p>
+<p class="has-line-data" data-line-start="72" data-line-end="74">Now goto Contacts app. Goto To any contact. You will see a button Send Whatsapp Message<br>
+<img src="https://i.ibb.co/xjS31Xt/11.png" alt="Whatsapp with MyAlice"></p>
+<p class="has-line-data" data-line-start="75" data-line-end="76">Click on the button to send message. You have to select any tempate, a phone number with country code then you are good to send whatsapp message.If there is any variables available in the template then you can input variables values also</p>
+<p class="has-line-data" data-line-start="77" data-line-end="78"><img src="https://i.ibb.co/WDL1rBr/12.png" alt="Whatsapp with MyAlice"></p>
+</body></html>
