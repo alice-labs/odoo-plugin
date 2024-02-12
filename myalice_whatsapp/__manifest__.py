@@ -33,6 +33,7 @@
         'views/menuitem_views.xml',
     ],
     "images": ["static/description/banner.JPG"],
+    'license': 'AGPL-3',
 
     'application': True,
     'installable': True,
