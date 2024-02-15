@@ -26,6 +26,20 @@ class SendMessageInvoicing(models.TransientModel):
 
     preview_whatsapp = fields.Html(compute="_compute_preview_whatsapp", string="Message Preview")
 
+    @api.depends('wa_template_id')
+    def _compute_preview_whatsapp(self):
+        for record in self:
+            if record.wa_template_id:
+                record.preview_whatsapp = self.env['ir.qweb']._render('myalice_whatsapp.template_message_preview', {
+
+                    'body': self.wa_template_id._get_formatted_body(demo_fallback=True),
+                    'buttons': record.wa_template_id.button_ids,
+                    'header_type': record.wa_template_id.header_type,
+                    # 'footer_text': record.wa_template_id.footer_text,
+                    # 'language_direction': 'rtl' if record.wa_template_id.lang_code in ('ar', 'he', 'fa', 'ur') else 'ltr',
+                })
+            else:
+                record.preview_whatsapp = None
 
 
     @api.depends('wa_template_id')

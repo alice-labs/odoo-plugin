@@ -20,6 +20,16 @@ class GetTemplateList(models.Model):
     button_ids = fields.One2many(comodel_name='template.buttons',inverse_name='buttons_ids',string='Buttons',tracking=True,readonly=True)
     variables_ids = fields.One2many(comodel_name='template.variables',inverse_name='template_id',string='Variables',tracking=True,readonly=True)
 
+    def _get_formatted_body(self, demo_fallback=False, variable_values=None):
+        self.ensure_one()
+        if not variable_values:
+            variable_values = {}
+        body = self.body
+        for variable in self.variables_ids:
+            value = variable_values.get(variable.attribute, variable.attribute)
+            body = body.replace(f"{{{variable.attribute}}}", value)
+        return body
+
 
 class TemplateButtons(models.Model):
     _name = 'template.buttons'

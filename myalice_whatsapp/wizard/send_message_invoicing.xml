@@ -5,23 +5,27 @@
         <field name="model">send.message.invoicing.wizard</field>
         <field name="arch" type="xml">
             <form string="Send Message">
-                <group>
-                     <field name="wa_template_id"/>
-                    <field name="phone"/>
-                </group>
-                <grop>
-                    <field name="free_text_1" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_1', '=', False)]}"/>
-                    <field name="free_text_2" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_2', '=', False)]}"/>
-                    <field name="free_text_3" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_3', '=', False)]}"/>
-                    <field name="free_text_4" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_4', '=', False)]}"/>
-                    <field name="free_text_5" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_5', '=', False)]}"/>
-                    <field name="free_text_6" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_6', '=', False)]}"/>
-                    <field name="free_text_7" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_7', '=', False)]}"/>
-                    <field name="free_text_8" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_8', '=', False)]}"/>
-                    <field name="free_text_9" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_9', '=', False)]}"/>
-                    <field name="free_text_10" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_10', '=', False)]}"/>
+                <div class="row">
+                    <div class="col-6">
+                        <span>Template:</span><field name="wa_template_id" options="{'no_create':True}" placeholder="Select Template"/> <br/>
+                        <span>Phone:</span><field name="phone" placeholder="Enter Phone Number"/>
+                        <br/>
+                        <field name="free_text_1" nolabel="1"  colspan="2" attrs="{'readonly': [('free_text_1', '=', False)]}"/>
+                        <field name="free_text_2" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_2', '=', False)]}"/>
+                        <field name="free_text_3" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_3', '=', False)]}"/>
+                        <field name="free_text_4" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_4', '=', False)]}"/>
+                        <field name="free_text_5" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_5', '=', False)]}"/>
+                        <field name="free_text_6" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_6', '=', False)]}"/>
+                        <field name="free_text_7" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_7', '=', False)]}"/>
+                        <field name="free_text_8" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_8', '=', False)]}"/>
+                        <field name="free_text_9" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_9', '=', False)]}"/>
+                        <field name="free_text_10" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_10', '=', False)]}"/>
+                    </div>
+                    <div class="col-6">
+                        <field name="preview_whatsapp" nolabel="1"/>
+                    </div>
+                </div>
 
-                </grop>
 
 
                 <footer>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': "WhatsApp with MyAlice",
     'version': '1.0',
@@ -16,9 +15,15 @@
     'website': "https://www.myalice.ai/",
     # any module necessary for this one to work correctly
     'depends': ['base','mail','account'],
+    'assets': {
+        'web.assets_backend': [
+            'myalice_whatsapp/static/src/**/*',
+        ],
+    },
 
     # always loaded
     'data': [
+        'data/whatsapp_templates_preview.xml',
         'security/whatsapp_security.xml',
         'security/ir.model.access.csv',
         'views/get_platform_list_views.xml',
@@ -32,9 +37,8 @@
         'views/send_message_invoicing_view.xml',
         'views/menuitem_views.xml',
     ],
-    "images": ["static/description/banner.JPG"],
-    'license': 'AGPL-3',
 
     'application': True,
     'installable': True,
 }
+# -*- coding: utf-8 -*-
