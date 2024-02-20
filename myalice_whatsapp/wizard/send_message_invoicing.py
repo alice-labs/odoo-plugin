@@ -12,7 +12,7 @@ class SendMessageInvoicing(models.TransientModel):
 
     res_model = fields.Char('Document Model Name')
     wa_template_id = fields.Many2one(comodel_name="get.template.list", string="Template", required=True)
-    phone = fields.Char(string='Phone',readonly=False,compute='_default_phone')
+    phone = fields.Char(string='Phone',readonly=False,required=True)
     free_text_1 = fields.Char(string="Free Text 1", )
     free_text_2 = fields.Char(string="Free Text 2", )
     free_text_3 = fields.Char(string="Free Text 3", )
@@ -42,7 +42,7 @@ class SendMessageInvoicing(models.TransientModel):
                 record.preview_whatsapp = None
 
 
-    @api.depends('wa_template_id')
+    @api.onchange('wa_template_id')
     def _default_phone(self):
         context = self.env.context
         active_id = context.get('active_id')
@@ -50,8 +50,6 @@ class SendMessageInvoicing(models.TransientModel):
         active_record = self.env[active_model].browse(active_id)
         if active_record:
             self.phone = active_record.partner_id.mobile
-        else:
-            self.phone = ''
 
     @api.onchange('wa_template_id')
     def _compute_free_text(self):
@@ -141,5 +139,5 @@ class SendMessageInvoicing(models.TransientModel):
                 }
             else:
                 raise UserError(_("Message Not Sent"))
-        except Exception:
-            raise ValidationError(_("Something went wrong. Please contact MyAlice."))
+        except Exception as e:
+            raise ValidationError(_(str(e)))

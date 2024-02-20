@@ -10,7 +10,7 @@ class SendMessageContact(models.TransientModel):
 
     res_model = fields.Char('Document Model Name')
     wa_template_id = fields.Many2one(comodel_name="get.template.list", string="Template", required=True)
-    phone = fields.Char(string='Phone',readonly=False,compute='_default_phone')
+    phone = fields.Char(string='Phone',readonly=False,)
     free_text_1 = fields.Char(string="Free Text 1", )
     free_text_2 = fields.Char(string="Free Text 2", )
     free_text_3 = fields.Char(string="Free Text 3", )
@@ -24,8 +24,22 @@ class SendMessageContact(models.TransientModel):
 
     preview_whatsapp = fields.Html(compute="_compute_preview_whatsapp", string="Message Preview")
 
-
     @api.depends('wa_template_id')
+    def _compute_preview_whatsapp(self):
+        for record in self:
+            if record.wa_template_id:
+                record.preview_whatsapp = self.env['ir.qweb']._render('myalice_whatsapp.template_message_preview', {
+
+                    'body': self.wa_template_id._get_formatted_body(demo_fallback=True),
+                    'buttons': record.wa_template_id.button_ids,
+                    'header_type': record.wa_template_id.header_type,
+                    # 'footer_text': record.wa_template_id.footer_text,
+                    # 'language_direction': 'rtl' if record.wa_template_id.lang_code in ('ar', 'he', 'fa', 'ur') else 'ltr',
+                })
+            else:
+                record.preview_whatsapp = None
+
+    @api.onchange('wa_template_id')
     def _default_phone(self):
         context = self.env.context
         active_id = context.get('active_id')
@@ -33,8 +47,6 @@ class SendMessageContact(models.TransientModel):
         active_record = self.env[active_model].browse(active_id)
         if active_record:
             self.phone = active_record.mobile
-        else:
-            self.phone = ''
 
 
     @api.onchange('wa_template_id')
@@ -74,6 +86,7 @@ class SendMessageContact(models.TransientModel):
             variable_values = [x for x in variable_list if x]
             attributes = {}
             if variable_keys != [] and variable_values != []:
+                print("Here")
                 if variable_keys == variable_values:
                     raise UserError(_("Please Enter Template Variables"))
                 elif len(variable_keys) != len(variable_values):
@@ -111,23 +124,5 @@ class SendMessageContact(models.TransientModel):
                 }
             else:
                 raise UserError(_("Message Not Sent"))
-        except Exception:
-            raise ValidationError(_("Something went wrong. Please contact MyAlice."))
-
-
-    def _compute_preview_whatsapp(self):
-        """This method is used to compute the preview of the whatsapp message."""
-        pass
-        # for record in self:
-        #     rec = record._get_active_records()
-        #     if record.wa_template_id and rec:
-        #         record.preview_whatsapp = self.env['ir.qweb']._render('myalice_whatsapp.template_message_preview', {
-        #             'body': record._get_html_preview_whatsapp(rec=rec[0]),
-        #             'buttons': record.wa_template_id.button_ids,
-        #             'header_type': record.wa_template_id.header_type,
-        #             'footer_text': record.wa_template_id.footer_text,
-        #             'language_direction': 'rtl' if record.wa_template_id.lang_code in (
-        #             'ar', 'he', 'fa', 'ur') else 'ltr',
-        #         })
-        #     else:
-        #         record.preview_whatsapp = None
+        except Exception as e:
+            raise ValidationError(_(str(e)))
