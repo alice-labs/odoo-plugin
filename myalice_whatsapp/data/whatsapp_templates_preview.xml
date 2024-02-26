@@ -22,13 +22,14 @@
                         <t t-out="body"/>
                     </div>
 
-                    <div t-if="footer_text" class="o_whatsapp_message_footer px-1">
-                        <span class="fs-6 text-400" t-out="footer_text" />
-                        <span class="o_whatsapp_msg_space me-5 d-inline-block"/>
-                    </div>
-<!--                    <span class="position-absolute bottom-0 end-0 o-whatsapp-font-11 py-1 px-2 text-black-50" area-hidden="true">-->
-<!--                        06:00-->
-<!--                    </span>-->
+<!--                    <div t-if="footer_text" class="o_whatsapp_message_footer px-1">-->
+<!--                        <span class="fs-6 text-400" t-out="footer" />-->
+<!--                        <span class="o_whatsapp_msg_space me-5 d-inline-block"/>-->
+<!--                    </div>-->
+                    <br/>
+                    <span class="position-absolute bottom-0 o_whatsapp_message_footer px-1 px-2 text-black-50" area-hidden="true">
+                        <t t-out="footer_text"/>
+                    </span>
                 </div>
 <!--                <div class="o_whatsapp_message_links cursor-default px-2" t-if="buttons">-->
 <!--                    <hr class="position-relative w-100 m-0"/>-->

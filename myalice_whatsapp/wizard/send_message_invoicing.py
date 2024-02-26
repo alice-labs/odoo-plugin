@@ -2,8 +2,8 @@ from odoo import api, fields, models, _
 import requests
 from odoo.exceptions import UserError, ValidationError
 import json
-import re
-from lxml import etree
+from markupsafe import Markup
+
 
 
 class SendMessageInvoicing(models.TransientModel):
@@ -26,20 +26,32 @@ class SendMessageInvoicing(models.TransientModel):
 
     preview_whatsapp = fields.Html(compute="_compute_preview_whatsapp", string="Message Preview")
 
-    @api.depends('wa_template_id')
+    @api.depends(lambda self: self._get_free_text_fields())
     def _compute_preview_whatsapp(self):
         for record in self:
             if record.wa_template_id:
+                variable = record.wa_template_id.variables_ids.mapped('attribute')
+                body = record.wa_template_id.body
+                if len(variable) > 0:
+                    for i in range(len(variable)):
+                        if record[f"free_text_{i + 1}"]:
+                            key = variable[i]
+                            key_with_brackets = "{{" + key + "}}"
+                            value = f"<b>{record[f'free_text_{i + 1}']}</b>"
+                            body = body.replace(key_with_brackets, value)
+                    body = Markup(body)
                 record.preview_whatsapp = self.env['ir.qweb']._render('myalice_whatsapp.template_message_preview', {
 
-                    'body': self.wa_template_id._get_formatted_body(demo_fallback=True),
+                    'body': body,
                     'buttons': record.wa_template_id.button_ids,
                     'header_type': record.wa_template_id.header_type,
-                    # 'footer_text': record.wa_template_id.footer_text,
-                    # 'language_direction': 'rtl' if record.wa_template_id.lang_code in ('ar', 'he', 'fa', 'ur') else 'ltr',
+                    'footer_text': record.wa_template_id.footer,
                 })
             else:
                 record.preview_whatsapp = None
+
+    def _get_free_text_fields(self):
+        return ["wa_template_id"] + [f"free_text_{i}" for i in range(1, 11)]
 
 
     @api.onchange('wa_template_id')

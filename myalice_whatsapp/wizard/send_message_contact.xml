@@ -22,7 +22,7 @@
                         <field name="free_text_10" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_10', '=', False)]}"/>
                     </div>
                     <div class="col-6">
-                        <field name="preview_whatsapp" nolabel="1"/>
+                        <field name="preview_whatsapp" widget="html" nolabel="1"/>
                     </div>
                 </div>
 
