@@ -3,6 +3,8 @@ import requests
 from odoo.exceptions import UserError, ValidationError
 import json
 from markupsafe import Markup
+import tempfile
+import base64
 
 
 class SendMessageContact(models.TransientModel):
@@ -12,6 +14,9 @@ class SendMessageContact(models.TransientModel):
     res_model = fields.Char('Document Model Name')
     wa_template_id = fields.Many2one(comodel_name="get.template.list", string="Template", required=True)
     phone = fields.Char(string='Phone',readonly=False,)
+    file = fields.Binary(string='File',attachment=True)
+    file_name = fields.Char(string='File Name')
+    is_file_available = fields.Boolean(default=False,compute='_is_file_available')
     free_text_1 = fields.Char(string="Free Text 1", )
     free_text_2 = fields.Char(string="Free Text 2", )
     free_text_3 = fields.Char(string="Free Text 3", )
@@ -25,7 +30,44 @@ class SendMessageContact(models.TransientModel):
 
     preview_whatsapp = fields.Html(compute="_compute_preview_whatsapp", string="Message Preview")
 
+    # @api.constrains('file')
+    # def _check_file(self):
+    #     if str(self.file_name.split(".")[1]) != 'pdf':
+    #         raise ValidationError("Cannot upload file different from .pdf file")
 
+    @api.model
+    def default_get(self, fields):
+        res = super(SendMessageContact, self).default_get(fields)
+        context = self.env.context
+        active_id = context.get('active_id')
+        active_record = self.env['store.temp.message'].search([('partner_id', '=', active_id)], limit=1)
+        if active_record:
+            res['wa_template_id'] = active_record.wa_template_id.id
+            res['phone'] = active_record.phone
+            res['free_text_1'] = active_record.free_text_1
+            res['free_text_2'] = active_record.free_text_2
+            res['free_text_3'] = active_record.free_text_3
+            res['free_text_4'] = active_record.free_text_4
+            res['free_text_5'] = active_record.free_text_5
+            res['free_text_6'] = active_record.free_text_6
+            res['free_text_7'] = active_record.free_text_7
+            res['free_text_8'] = active_record.free_text_8
+            res['free_text_9'] = active_record.free_text_9
+            res['free_text_10'] = active_record.free_text_10
+        else:
+            active_model = context.get('active_model')
+            active_record = self.env[active_model].browse(active_id)
+            if active_record:
+                res['phone'] = active_record.mobile
+        return res
+
+    @api.onchange("wa_template_id")
+    def _is_file_available(self):
+        file = self.wa_template_id.header_type
+        if file:
+            self.is_file_available = True
+        else:
+            self.is_file_available = False
 
     @api.depends(lambda self: self._get_free_text_fields())
     def _compute_preview_whatsapp(self):
@@ -52,15 +94,6 @@ class SendMessageContact(models.TransientModel):
                 record.preview_whatsapp = None
     def _get_free_text_fields(self):
         return ["wa_template_id"] + [f"free_text_{i}" for i in range(1, 11)]
-
-    @api.onchange('wa_template_id')
-    def _default_phone(self):
-        context = self.env.context
-        active_id = context.get('active_id')
-        active_model = context.get('active_model')
-        active_record = self.env[active_model].browse(active_id)
-        if active_record:
-            self.phone = active_record.mobile
 
 
     @api.onchange('wa_template_id')
@@ -109,6 +142,35 @@ class SendMessageContact(models.TransientModel):
 
             secret_key = self.env['set.whatsapp.config'].search([('is_active', '=', True)])
 
+            # if self.is_file_available and self.file:
+            #     binary_content = self.file
+            #     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp:
+            #         temp.write(base64.b64decode(binary_content))
+            #         temp.seek(0)  # reset file pointer to the beginning
+            #
+            #         document_url = 'https://api.myalice.ai/stable/bots/upload-document'
+            #         document_headers = {
+            #             'X-Myalice-Api-Key': secret_key.secret_key
+            #         }
+            #         document_data = {
+            #             'file': temp
+            #         }
+            #         document_response = requests.post(document_url, data=document_data, headers=document_headers)
+
+            if self.file:
+                binary_content = self.file
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp:
+                    temp.write(base64.b64decode(binary_content))
+                    temp_path = temp.name
+
+                with open(temp_path, 'rb') as file:
+                    response = requests.post('https://api.myalice.ai/stable/bots/upload-document',
+                                                headers={'X-Myalice-Api-Key': secret_key.secret_key},
+                                                files={'file': (self.file_name, file, 'application/pdf')})
+                    if response.status_code == 200:
+                        document_url = response.json()['url']
+
+
             url = 'https://api.myalice.ai/stable/open/whatsapp/send-template-message'
             template_id = self.wa_template_id.template_id
             channel_id = self.wa_template_id.platform_id
@@ -122,9 +184,27 @@ class SendMessageContact(models.TransientModel):
                     'customer_phone': self.phone,
                     'attributes': attributes,
                     }
+            if document_url:
+                data['document'] = document_url
+
 
             response = requests.post(url, data=json.dumps(data), headers=headers)
             if response.status_code == 200:
+                self.env['store.temp.message'].create({
+                    'partner_id': self.env.context.get('active_id'),
+                    'wa_template_id': self.wa_template_id.id,
+                    'phone': self.phone,
+                    'free_text_1': self.free_text_1,
+                    'free_text_2': self.free_text_2,
+                    'free_text_3': self.free_text_3,
+                    'free_text_4': self.free_text_4,
+                    'free_text_5': self.free_text_5,
+                    'free_text_6': self.free_text_6,
+                    'free_text_7': self.free_text_7,
+                    'free_text_8': self.free_text_8,
+                    'free_text_9': self.free_text_9,
+                    'free_text_10': self.free_text_10,
+                })
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',

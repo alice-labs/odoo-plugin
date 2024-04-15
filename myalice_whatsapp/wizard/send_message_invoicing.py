@@ -3,6 +3,8 @@ import requests
 from odoo.exceptions import UserError, ValidationError
 import json
 from markupsafe import Markup
+import tempfile
+import base64
 
 
 
@@ -13,6 +15,9 @@ class SendMessageInvoicing(models.TransientModel):
     res_model = fields.Char('Document Model Name')
     wa_template_id = fields.Many2one(comodel_name="get.template.list", string="Template", required=True)
     phone = fields.Char(string='Phone',readonly=False,required=True)
+    file = fields.Binary(string='File', attachment=True)
+    file_name = fields.Char(string='File Name')
+    is_file_available = fields.Boolean(default=False, compute='_is_file_available')
     free_text_1 = fields.Char(string="Free Text 1", )
     free_text_2 = fields.Char(string="Free Text 2", )
     free_text_3 = fields.Char(string="Free Text 3", )
@@ -25,6 +30,40 @@ class SendMessageInvoicing(models.TransientModel):
     free_text_10 = fields.Char(string="Free Text 10", )
 
     preview_whatsapp = fields.Html(compute="_compute_preview_whatsapp", string="Message Preview")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(SendMessageInvoicing, self).default_get(fields)
+        context = self.env.context
+        active_id = context.get('active_id')
+        active_model = context.get('active_model')
+        self_active_record = self.env[active_model].browse(active_id)
+        active_record = self.env['store.temp.message'].search([('partner_id', '=', self_active_record.partner_id.id)], limit=1)
+        if active_record:
+            res['wa_template_id'] = active_record.wa_template_id.id
+            res['phone'] = active_record.phone
+            res['free_text_1'] = active_record.free_text_1
+            res['free_text_2'] = active_record.free_text_2
+            res['free_text_3'] = active_record.free_text_3
+            res['free_text_4'] = active_record.free_text_4
+            res['free_text_5'] = active_record.free_text_5
+            res['free_text_6'] = active_record.free_text_6
+            res['free_text_7'] = active_record.free_text_7
+            res['free_text_8'] = active_record.free_text_8
+            res['free_text_9'] = active_record.free_text_9
+            res['free_text_10'] = active_record.free_text_10
+        else:
+            if self_active_record:
+                res['phone'] = self_active_record.partner_id.mobile
+        return res
+
+    @api.onchange("wa_template_id")
+    def _is_file_available(self):
+        file = self.wa_template_id.header_type
+        if file:
+            self.is_file_available = True
+        else:
+            self.is_file_available = False
 
     @api.depends(lambda self: self._get_free_text_fields())
     def _compute_preview_whatsapp(self):
@@ -53,15 +92,6 @@ class SendMessageInvoicing(models.TransientModel):
     def _get_free_text_fields(self):
         return ["wa_template_id"] + [f"free_text_{i}" for i in range(1, 11)]
 
-
-    @api.onchange('wa_template_id')
-    def _default_phone(self):
-        context = self.env.context
-        active_id = context.get('active_id')
-        active_model = context.get('active_model')
-        active_record = self.env[active_model].browse(active_id)
-        if active_record:
-            self.phone = active_record.partner_id.mobile
 
     @api.onchange('wa_template_id')
     def _compute_free_text(self):
@@ -109,19 +139,21 @@ class SendMessageInvoicing(models.TransientModel):
                 else:
                     attributes = dict(zip(variable_keys, variable_values))
 
-            # Get Invoice PDF Data
-            if self.wa_template_id.header_type == 'document':
-                context = self.env.context
-                active_id = context.get('active_id')
-                active_model = context.get('active_model')
-                active_record = self.env[active_model].browse(active_id)
-                server_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-                invoice_public_url = server_url + active_record.get_portal_url()
-                attachment = {
-                    'document': invoice_public_url
-                }
-
             secret_key = self.env['set.whatsapp.config'].search([('is_active', '=', True)])
+
+            if self.file:
+                binary_content = self.file
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp:
+                    temp.write(base64.b64decode(binary_content))
+                    temp_path = temp.name
+
+                with open(temp_path, 'rb') as file:
+                    response = requests.post('https://api.myalice.ai/stable/bots/upload-document',
+                                                headers={'X-Myalice-Api-Key': secret_key.secret_key},
+                                                files={'file': (self.file_name, file, 'application/pdf')})
+                    if response.status_code == 200:
+                        document_url = response.json()['url']
+
 
             url = 'https://api.myalice.ai/stable/open/whatsapp/send-template-message'
             template_id = self.wa_template_id.template_id
@@ -136,6 +168,8 @@ class SendMessageInvoicing(models.TransientModel):
                     'customer_phone': self.phone,
                     'attributes': attributes,
                     'attachment': attachment,}
+            if document_url:
+                data['document'] = document_url
 
             response = requests.post(url, data=json.dumps(data), headers=headers)
             if response.status_code == 200:

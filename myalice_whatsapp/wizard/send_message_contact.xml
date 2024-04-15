@@ -10,6 +10,10 @@
                         <span>Template:</span><field name="wa_template_id" options="{'no_create':True}" placeholder="Select Template"/> <br/>
                         <span>Phone:</span><field name="phone" placeholder="Enter Phone Number"/>
                         <br/>
+                        <field name="is_file_available" invisible="1"/>
+                        <field name="file_name" invisible="1"/>
+                        <field name="file" widget="work_permit_upload" attrs="{'invisible':[('is_file_available','=',False)]}" filename="file_name"/>
+                        <br/>
                         <field name="free_text_1" nolabel="1"  colspan="2" attrs="{'readonly': [('free_text_1', '=', False)]}"/>
                         <field name="free_text_2" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_2', '=', False)]}"/>
                         <field name="free_text_3" nolabel="1" colspan="2" attrs="{'readonly': [('free_text_3', '=', False)]}"/>
