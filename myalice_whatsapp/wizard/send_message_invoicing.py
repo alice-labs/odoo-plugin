@@ -97,25 +97,25 @@ class SendMessageInvoicing(models.TransientModel):
 
     @api.onchange('wa_template_id')
     def _compute_free_text(self):
-        template = self.env['store.temp.message'].search([('wa_template_id', '=', self.wa_template_id.id),
-                                                               ('model','=',self._context.get('active_model'))],
-                                                              limit=1,order='id desc')
-
-        if template:
-            for i in range(1, 11):
-                field_name = f"free_text_{i}"
-                if not getattr(template, field_name):
-                    setattr(template, field_name, False)
-        # self.free_text_1 = False
-        # self.free_text_2 = False
-        # self.free_text_3 = False
-        # self.free_text_4 = False
-        # self.free_text_5 = False
-        # self.free_text_6 = False
-        # self.free_text_7 = False
-        # self.free_text_8 = False
-        # self.free_text_9 = False
-        # self.free_text_10 = False
+        # template = self.env['store.temp.message'].search([('wa_template_id', '=', self.wa_template_id.id),
+        #                                                        ('model','=',self._context.get('active_model'))],
+        #                                                       limit=1,order='id desc')
+        #
+        # if template:
+        #     for i in range(1, 11):
+        #         field_name = f"free_text_{i}"
+        #         if not getattr(template, field_name):
+        #             setattr(template, field_name, False)
+        self.free_text_1 = False
+        self.free_text_2 = False
+        self.free_text_3 = False
+        self.free_text_4 = False
+        self.free_text_5 = False
+        self.free_text_6 = False
+        self.free_text_7 = False
+        self.free_text_8 = False
+        self.free_text_9 = False
+        self.free_text_10 = False
         attribute = self.wa_template_id.variables_ids.mapped('attribute')
         free_text_count = 1
         if attribute:
