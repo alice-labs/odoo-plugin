@@ -40,7 +40,9 @@ class SendMessageContact(models.TransientModel):
         res = super(SendMessageContact, self).default_get(fields)
         context = self.env.context
         active_id = context.get('active_id')
-        active_record = self.env['store.temp.message'].search([('partner_id', '=', active_id)], limit=1)
+        active_record = self.env['store.temp.message'].search([('partner_id', '=', active_id),
+                                                               ('model','=',self._context.get('active_model'))],
+                                                              limit=1,order='id desc')
         if active_record:
             res['wa_template_id'] = active_record.wa_template_id.id
             res['phone'] = active_record.phone
@@ -98,16 +100,25 @@ class SendMessageContact(models.TransientModel):
 
     @api.onchange('wa_template_id')
     def _compute_free_text(self):
-        self.free_text_1 = False
-        self.free_text_2 = False
-        self.free_text_3 = False
-        self.free_text_4 = False
-        self.free_text_5 = False
-        self.free_text_6 = False
-        self.free_text_7 = False
-        self.free_text_8 = False
-        self.free_text_9 = False
-        self.free_text_10 = False
+        template = self.env['store.temp.message'].search([('wa_template_id', '=', self.wa_template_id.id),
+                                                          ('model', '=', self._context.get('active_model'))],
+                                                         limit=1, order='id desc')
+
+        if template:
+            for i in range(1, 11):
+                field_name = f"free_text_{i}"
+                if not getattr(template, field_name):
+                    setattr(template, field_name, False)
+        # self.free_text_1 = False
+        # self.free_text_2 = False
+        # self.free_text_3 = False
+        # self.free_text_4 = False
+        # self.free_text_5 = False
+        # self.free_text_6 = False
+        # self.free_text_7 = False
+        # self.free_text_8 = False
+        # self.free_text_9 = False
+        # self.free_text_10 = False
         attribute = self.wa_template_id.variables_ids.mapped('attribute')
         free_text_count = 1
         if attribute:
@@ -141,22 +152,7 @@ class SendMessageContact(models.TransientModel):
                     attributes = dict(zip(variable_keys, variable_values))
 
             secret_key = self.env['set.whatsapp.config'].search([('is_active', '=', True)])
-
-            # if self.is_file_available and self.file:
-            #     binary_content = self.file
-            #     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp:
-            #         temp.write(base64.b64decode(binary_content))
-            #         temp.seek(0)  # reset file pointer to the beginning
-            #
-            #         document_url = 'https://api.myalice.ai/stable/bots/upload-document'
-            #         document_headers = {
-            #             'X-Myalice-Api-Key': secret_key.secret_key
-            #         }
-            #         document_data = {
-            #             'file': temp
-            #         }
-            #         document_response = requests.post(document_url, data=document_data, headers=document_headers)
-
+            document_url = ''
             if self.file:
                 binary_content = self.file
                 with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp:
@@ -169,7 +165,6 @@ class SendMessageContact(models.TransientModel):
                                                 files={'file': (self.file_name, file, 'application/pdf')})
                     if response.status_code == 200:
                         document_url = response.json()['url']
-
 
             url = 'https://api.myalice.ai/stable/open/whatsapp/send-template-message'
             template_id = self.wa_template_id.template_id
@@ -184,9 +179,9 @@ class SendMessageContact(models.TransientModel):
                     'customer_phone': self.phone,
                     'attributes': attributes,
                     }
+
             if document_url:
                 data['document'] = document_url
-
 
             response = requests.post(url, data=json.dumps(data), headers=headers)
             if response.status_code == 200:
@@ -194,6 +189,7 @@ class SendMessageContact(models.TransientModel):
                     'partner_id': self.env.context.get('active_id'),
                     'wa_template_id': self.wa_template_id.id,
                     'phone': self.phone,
+                    'model': self._context.get('active_model'),
                     'free_text_1': self.free_text_1,
                     'free_text_2': self.free_text_2,
                     'free_text_3': self.free_text_3,

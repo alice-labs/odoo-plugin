@@ -36,9 +36,9 @@ class SendMessageInvoicing(models.TransientModel):
         res = super(SendMessageInvoicing, self).default_get(fields)
         context = self.env.context
         active_id = context.get('active_id')
-        active_model = context.get('active_model')
-        self_active_record = self.env[active_model].browse(active_id)
-        active_record = self.env['store.temp.message'].search([('partner_id', '=', self_active_record.partner_id.id)], limit=1)
+        active_record = self.env['store.temp.message'].search([('partner_id', '=', active_id),
+                                                               ('model', '=', self._context.get('active_model'))],
+                                                              limit=1, order='id desc')
         if active_record:
             res['wa_template_id'] = active_record.wa_template_id.id
             res['phone'] = active_record.phone
@@ -53,8 +53,10 @@ class SendMessageInvoicing(models.TransientModel):
             res['free_text_9'] = active_record.free_text_9
             res['free_text_10'] = active_record.free_text_10
         else:
-            if self_active_record:
-                res['phone'] = self_active_record.partner_id.mobile
+            active_model = context.get('active_model')
+            active_record = self.env[active_model].browse(active_id)
+            if active_record:
+                res['phone'] = active_record.partner_id.mobile
         return res
 
     @api.onchange("wa_template_id")
@@ -95,16 +97,25 @@ class SendMessageInvoicing(models.TransientModel):
 
     @api.onchange('wa_template_id')
     def _compute_free_text(self):
-        self.free_text_1 = False
-        self.free_text_2 = False
-        self.free_text_3 = False
-        self.free_text_4 = False
-        self.free_text_5 = False
-        self.free_text_6 = False
-        self.free_text_7 = False
-        self.free_text_8 = False
-        self.free_text_9 = False
-        self.free_text_10 = False
+        template = self.env['store.temp.message'].search([('wa_template_id', '=', self.wa_template_id.id),
+                                                               ('model','=',self._context.get('active_model'))],
+                                                              limit=1,order='id desc')
+
+        if template:
+            for i in range(1, 11):
+                field_name = f"free_text_{i}"
+                if not getattr(template, field_name):
+                    setattr(template, field_name, False)
+        # self.free_text_1 = False
+        # self.free_text_2 = False
+        # self.free_text_3 = False
+        # self.free_text_4 = False
+        # self.free_text_5 = False
+        # self.free_text_6 = False
+        # self.free_text_7 = False
+        # self.free_text_8 = False
+        # self.free_text_9 = False
+        # self.free_text_10 = False
         attribute = self.wa_template_id.variables_ids.mapped('attribute')
         free_text_count = 1
         if attribute:
@@ -140,7 +151,7 @@ class SendMessageInvoicing(models.TransientModel):
                     attributes = dict(zip(variable_keys, variable_values))
 
             secret_key = self.env['set.whatsapp.config'].search([('is_active', '=', True)])
-
+            document_url = ''
             if self.file:
                 binary_content = self.file
                 with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp:
@@ -173,6 +184,22 @@ class SendMessageInvoicing(models.TransientModel):
 
             response = requests.post(url, data=json.dumps(data), headers=headers)
             if response.status_code == 200:
+                self.env['store.temp.message'].create({
+                    'partner_id': self.env.context.get('active_id'),
+                    'wa_template_id': self.wa_template_id.id,
+                    'phone': self.phone,
+                    'model': self._context.get('active_model'),
+                    'free_text_1': self.free_text_1,
+                    'free_text_2': self.free_text_2,
+                    'free_text_3': self.free_text_3,
+                    'free_text_4': self.free_text_4,
+                    'free_text_5': self.free_text_5,
+                    'free_text_6': self.free_text_6,
+                    'free_text_7': self.free_text_7,
+                    'free_text_8': self.free_text_8,
+                    'free_text_9': self.free_text_9,
+                    'free_text_10': self.free_text_10,
+                })
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',

@@ -7,6 +7,7 @@ class StoreTempMessage(models.Model):
     partner_id = fields.Many2one(comodel_name="res.partner", string="Partner", required=True)
     wa_template_id = fields.Many2one(comodel_name="get.template.list", string="Template", required=True)
     phone = fields.Char(string='Phone',readonly=False,)
+    model = fields.Char(string='Model',)
     free_text_1 = fields.Char(string="Free Text 1", )
     free_text_2 = fields.Char(string="Free Text 2", )
     free_text_3 = fields.Char(string="Free Text 3", )
